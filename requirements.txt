@@ -2,6 +2,7 @@ defusedxml==0.4.1
 dj-database-url==0.4.1
 Django==1.10
 oauthlib==1.1.2
+psycopg2==2.6.2
 PyJWT==1.4.2
 python-social-auth==0.2.21
 python3-openid==3.0.10
