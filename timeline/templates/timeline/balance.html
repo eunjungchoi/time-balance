@@ -1,0 +1,37 @@
+{% extends "timeline/base.html" %}
+
+
+{% block content %}
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-10">
+			<h3>{{ today.year }} 년 {{ today.month }} 월 통계 </h3>
+		</div>
+	</div>
+
+	<div class="row" style="margin-top:30px">
+		<div class="col-lg-10">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<tr>
+						<th> 이름 </th>
+						<th> 기준급여 (만원/일) </th>
+						<th> 근무 합계 (일) </th>
+						<th> 총 급여 (만원) </th>
+					</tr>
+					{% for member in members %}
+					<tr>
+						<td> {{ member.user }} </td>
+						<td> {{ member.user.paycheck }}</td>
+						<td> {{ member.monthly_works }}</td>
+						<td> {{ member.monthly_paycheck }}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+{% endblock content %}

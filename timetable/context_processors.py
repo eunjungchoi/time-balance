@@ -1,4 +1,4 @@
-from timeline.models import UserProxy
+from timeline.models import User
 
 
 def auth(request):
@@ -11,8 +11,8 @@ def auth(request):
     """
     if hasattr(request, 'user'):
         try:
-            user = UserProxy.objects.get(pk=request.user.id)
-        except UserProxy.DoesNotExist:
+            user = User.objects.get(pk=request.user.id)
+        except User.DoesNotExist:
             from django.contrib.auth.models import AnonymousUser
             user = AnonymousUser()
     return {

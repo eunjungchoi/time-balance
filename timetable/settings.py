@@ -21,10 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = '$z$^t_q9vh4dnp=*eg1f$%ri0@&^nw1g9xk6(=5&fh7mm7_7*x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DEBUG'))
+# DEBUG = bool(os.environ.get('DEBUG'))
+DEBUG = True
 
 LOGIN_URL = '/login/'
 ALLOWED_HOSTS = []
@@ -97,6 +98,9 @@ DATABASES = {
 }
 
 
+AUTH_USER_MODEL = 'timeline.User'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -117,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.facebook.FacebookOAuth2',
+    # 'social.backends.email.EmailAuth',
     'django.contrib.auth.backends.ModelBackend',
     # 'social.backends.google.GoogleOAuth2',
     # 'social.backends.twitter.TwitterOAuth',
@@ -231,32 +235,32 @@ MEDIA_URL = '/media/'
 
 # ======================================================================
 # Amazon AWS setting
-
-AWS_STORAGE_BUCKET_NAME = 'snail-timetable'
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = 'ap-northeast-2' #"us-east-1"
-AWS_S3_HOST = 's3-%s.amazonaws.com' % AWS_REGION
-os.environ['S3_USE_SIGV4'] = 'True' # https://github.com/boto/boto/issues/2916
-
-
-
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-if not DEBUG:
-    # This is used by the `static` template tag from `static`, if you're using that. Or if anything else
-    # refers directly to STATIC_URL. So it's safest to always set it.
-    # STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
-    STATIC_URL = "https://%s/static/" % (AWS_S3_CUSTOM_DOMAIN, )
-
-    # Tell the staticfiles app to use S3Boto storage when writing the collected static files (when
-    # you run `collectstatic`).
-    # STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    STATICFILES_STORAGE = 's3_storage.StaticStorage'
-
-
-    #
-    MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN, )
-
-    #DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    DEFAULT_FILE_STORAGE = 's3_storage.MediaStorage'
+#
+# AWS_STORAGE_BUCKET_NAME = 'snail-timetable'
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# AWS_REGION = 'ap-northeast-2' #"us-east-1"
+# AWS_S3_HOST = 's3-%s.amazonaws.com' % AWS_REGION
+# os.environ['S3_USE_SIGV4'] = 'True' # https://github.com/boto/boto/issues/2916
+#
+#
+#
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+#
+# if not DEBUG:
+#     # This is used by the `static` template tag from `static`, if you're using that. Or if anything else
+#     # refers directly to STATIC_URL. So it's safest to always set it.
+#     # STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+#     STATIC_URL = "https://%s/static/" % (AWS_S3_CUSTOM_DOMAIN, )
+#
+#     # Tell the staticfiles app to use S3Boto storage when writing the collected static files (when
+#     # you run `collectstatic`).
+#     # STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#     STATICFILES_STORAGE = 's3_storage.StaticStorage'
+#
+#
+#     #
+#     MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN, )
+#
+#     #DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#     DEFAULT_FILE_STORAGE = 's3_storage.MediaStorage'

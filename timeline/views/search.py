@@ -8,7 +8,7 @@ from timeline.models import *
 
 @login_required
 def search(request):
-	study_list = Study.objects.filter(user=request.user).order_by('-date')
+	study_list = Work.objects.filter(user=request.user).order_by('-date')
 	q = request.GET.get("q", None)
 	if q:
 		search_list = study_list.filter(Q(contents__icontains=q) | Q(title__icontains=q))

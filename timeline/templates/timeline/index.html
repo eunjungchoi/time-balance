@@ -1,57 +1,39 @@
 {% extends "timeline/base.html" %}
 
-	{% block content %}
+{% block content %}
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-12">
-				{% if not categories %}
-				<h2>열심히 공부해볼까요?</h2>
-				<p>달력이 비어있네요. 먼저 요즘 어떤 공부를 하고 있는지 카테고리들을 먼저 추가하고, 날짜별 공부일정을 등록해보세요.</p>
-				{% else %}
-				<h2>열심히 공부하고 있습니다</h2>
-				{% endif %}
+			<div class="col-lg-8">
+				<h2>Puddlr 근무 일지</h2>
 			</div>
 		</div>
 	</div>
 
-	<div class="container">
-		{% if categories %}
+	<div class="container" style="margin-top:30px">
+		{% if member %}
 		<div class="row">
 			<div class="col-lg-12">
-				<h4>오늘 공부 추가하기</h4>
-				<form class="form-horizontal" action="{% url 'add' %}" method="post" enctype="multipart/form-data">
+				<form class="form-horizontal" action="{% url 'add' %}" method="post">
 					{% csrf_token %}
 					<div class="form-group">
-						<label for="title" class="col-lg-2 control-label">* Title</label>
+						<label for="contents" class="col-lg-2 control-label">Name </label>
 						<div class="col-lg-8">
-							<input type="text" class="form-control" name="title" id="title" placeholder="오늘 뭘 하셨나요?">
+							<p>{{ member }}</p>
+							<input type="hidden" class="form-control" name="member" id="member" value="{{ member.user.username }}">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="date" class="col-lg-2 control-label">* Date</label>
+						<label for="date" class="col-lg-2 control-label">Date</label>
 						<div class="col-lg-8">
 							<input type="date" class="form-control" format="yyyy-mm-dd" name="date" id="date" value="{% now 'Y-m-d' %}">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="contents" class="col-lg-2 control-label">Details</label>
+						<label class="col-lg-2 control-label">Working unit</label>
 						<div class="col-lg-8">
-							<textarea class="form-control" rows="3" name="contents" id="contents"></textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="photo" class="col-lg-2 control-label">Photo/ Screenshot</label>
-						<div class="col-lg-8">
-							<input type="file" class="form-control" name="photo" id="photo" accept="image/*" multiple>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label">Categories</label>
-						<div class="col-lg-8">
-						{% for category in categories %}
-
-							<label class="checkbox-inline">
-								<input type="checkbox" name="category" id="category-{{ category.id }}" value="{{category.id}}"> {{ category }}
+						{% for period in periods %}
+							<label class="radio-inline">
+								<input type="radio" name="period" id="period-{{ period.id }}" value="{{ period.id }}"> {{ period.unit }}일
 							</label>
 						{% endfor %}
 						</div>
@@ -64,82 +46,38 @@
 				</form>
 			</div>
 		</div>
+		{% endif %}
+	</div>
+
+	<div class="container">
+		{% if works %}
 		<div class="row" style="margin-top:30px">
-			<div class="col-lg-10">
+			<div class="col-lg-12">
 	 			<form action="{% url 'delete' %}" method="post">
 				{% csrf_token %}
 					<div class="table-responsive">
 					<table class="table table-hover">
 						<tr>
 							<th></th>
-							<th>date</th>
-							<th>title</th>
-							{% for cat in categories %}
-							<th>{{cat.name}}</th>
-							{% endfor %}
+							<th>날짜</th>
+							<th>이름</th>
+							<th>업무</th>
 						</tr>
-
-						{% for study in study_list %}
+						{% for work in works %}
 						<tr>
-							<td><input type="checkbox" name="item" value="{{ study.id }}" /></td>
-							<td>{{ study.date|date:"Y-m-d" }}</td>
-							<td><a href="{% url 'detail' study.id %}">{{ study.title }}</a></td>
-							{% for cat in categories %}
-							<td>
-							{% if cat.name in study.get_category_names %}
-							O
-							{% endif %}
-							</td>
-							{% endfor %}
+							<td><input type="checkbox" name="item" value="{{ work.id }}" /></td>
+							<td>{{ work.date|date:"Y-m-d" }}</td>
+							<td>{{ work.member }}</td>
+							<td>{{ work.period }}</td>
 						</tr>
 						{% endfor %}
 					</table>
+
 					</div>
-					{% if study_list %}
 					<button type="submit" class="btn btn-default">삭제</button>
-					{% endif %}
 				</form>
 			</div>
 		</div>
 		{% endif %}
 	</div>
-
-	<div class="container">
-		<div class="row">
-			<hr>
-		</div>
-	</div>
-
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12">
-				<form id="add_category_form" class="form-inline" action="{% url 'add_cat' %}" method="post">
-				{% csrf_token %}
-					<div class="form-group">
-						<label for="cat_name_to_add">새 카테고리  </label>
-						<input type="text" class="form-control" name="name" id="cat_name_to_add" placeholder="ex) 독서">
-					</div>
-	  				<button type="submit" class="btn btn-default">추가</button>
-				</form>
-			</div>
-		</div>
-
-		{% if categories %}
-		<div class="row" style="margin-top:10px">
-			<div class="col-lg-12">
-				<form id="delete_category_form" class="form-inline" action="{% url 'delete_cat' %}" method="post">
-				{% csrf_token %}
-					<div class="form-group">
-						{% for cat in categories %}
-						<label class="checkbox-inline">
-							<input type="checkbox" name="cat_id_to_del" id="cat_id_to_del" value="{{ cat.id }}"> {{ cat.name }}
-						</label>
-						{% endfor %}
-					</div>
-					<button type="submit" class="btn btn-default">카테고리 삭제</button>
-				</form>
-			</div>
-		</div>
-		{% endif %}
-	</div>
-	{% endblock %}
+{% endblock %}

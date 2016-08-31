@@ -1,7 +1,8 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
 from django.db.models import Count
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from datetime import datetime, timedelta, date
 from timeline.models import *
@@ -10,62 +11,80 @@ from timeline.models import *
 @login_required
 def index(request):
 	user = request.user
-	study_list = user.studies.order_by("-date", "-created_at")
+	team = Team.objects.get(name='Ecolemo_Puddlr')
+
+	try:
+		member = Member.objects.filter(team=team).get(user=user)
+	except Member.DoesNotExist:
+		return redirect(reverse('index_for_viewer'))
+
+	works = Work.objects.filter(team=team).order_by("-date")
+	periods = Period.objects.filter(team=team)
 	context = {
-		'study_list' : study_list,
-		'categories' : user.category_set.all(),
+		'user': user,
+		'team': team,
+		'member': member,
+		'works': works,
+		'periods': periods,
 		}
 	return render(request, 'timeline/index.html', context)
 
 
 @login_required
-def detail(request, study_id):
-	study = get_object_or_404(Study, pk=study_id)
-	owner = study.user
-	timeline = get_object_or_404(Timeline, owner=owner)
-
-	is_owner = request.user.pk == owner.pk
-	has_permission = timeline.viewers.filter(id=request.user.id).exists()
-
-	if not (is_owner or has_permission):
-		return render(request, '403.html')
+def index_for_viewer(request):
+	user = request.user
+	team = Team.objects.get(name='Ecolemo_Puddlr')
+	works = Work.objects.filter(team=team).order_by("-date")
+	periods = Period.objects.filter(team=team)
 
 	context = {
-		'study' : study,
-		'owner' : owner,
-		'same_user' : is_owner,
-	}
-	return render(request, 'timeline/detail.html', context)
+		'user': user,
+		'team': team,
+		'works': works,
+		'periods': periods,
+		}
+	return render(request, 'timeline/index_for_viewer.html', context)
 
 
 @login_required
-def cal(request):
-	user = request.user
-	cats = user.category_set.annotate(num_study=Count('study'))
-	month = range(30)
+def balance(request):
+	team = Team.objects.get(name='Ecolemo_Puddlr')
+	members = Member.objects.filter(team=team) # yr, dn, ej
+	periods = Period.objects.filter(team=team) # 0.5, 1.0, 1.5
+
 	today = date.today()
-	default_day = today - timedelta(days=29)
+	this_month = today.month
 
-	categories = []
-	for cat in cats:
-		item = {
-			"name": cat.name,
-			"num_study": cat.num_study,
-			"studies" : [[today - timedelta(days=x), 0] for x in reversed(range(30))],
-		}
-
-		recent_study_list = user.studies.filter(date__gte=default_day).filter(category=cat)
-		for study in recent_study_list:
-			d = study.date - default_day
-			x = d.days
-			item["studies"][x][1] += 1
-
-		categories.append(item)
+	# 전체 팀 통계
+	all_works_this_month = Work.objects.filter(team=team).filter(date__month=this_month)
+	# 멤버별 통계
+	for member in members:
+		monthly_work_list_per_member = all_works_this_month.filter(member=member.user)
+		member.monthly_works = 0
+		for work in monthly_work_list_per_member:
+			member.monthly_works += work.period.unit
+		member.monthly_paycheck = member.user.paycheck * member.monthly_works
 
 	context = {
-		'categories' : categories,
-		'month' : month,
-		'default_day': default_day,
-		'recent_study_list' : recent_study_list
+		'members': members,
+		'periods': periods,
+		'today': today,
 	}
-	return render(request, 'timeline/cal.html', context)
+
+	return render(request, 'timeline/balance.html', context)
+
+
+	# work_days_cnt = len(my_works_this_month)
+	# monthly_balance = 0
+	# theanswer = Item.objects.values('category').annotate(Count('category'))
+		# values('member',).annotate(workingdays=Count('date')).order_by('-date')
+
+	#
+	# for period in periods[:2]:
+	# 	period.count = len(my_works_this_month.filter(period__name=period))
+	# 	period.paycheck = 1/2 * daily_paycheck
+	# 	monthly_balance += period.count * period.paycheck
+	# for period in periods[2:]:
+	# 	period.count = len(my_works_this_month.filter(period__name=period))
+	# 	period.paycheck = daily_paycheck
+	# 	monthly_balance += period.count * period.paycheck

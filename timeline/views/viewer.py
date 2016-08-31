@@ -20,6 +20,8 @@ def account(request, user_id):
 	study_list = Study.objects.filter(user=owner).order_by('-date')
 	categories = Category.objects.filter(user=owner)
 
+	request.user.get_profile_image()
+
 	context = {
 		'study_list' : study_list,
 		'categories' : categories,

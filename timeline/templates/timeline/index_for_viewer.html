@@ -1,0 +1,37 @@
+{% extends "timeline/base.html" %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<h2>Puddlr 근무 일지</h2>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		{% if works %}
+		<div class="row" style="margin-top:30px">
+			<div class="col-lg-12">
+					<div class="table-responsive">
+  					<table class="table table-hover">
+  						<tr>
+  							<th>날짜</th>
+  							<th>이름</th>
+  							<th>업무</th>
+  						</tr>
+  						{% for work in works %}
+  						<tr>
+  							<td>{{ work.date|date:"Y-m-d" }}</td>
+  							<td>{{ work.member }}</td>
+  							<td>{{ work.period }}</td>
+  						</tr>
+  						{% endfor %}
+  					</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+{% endblock %}

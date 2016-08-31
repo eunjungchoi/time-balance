@@ -11,11 +11,11 @@ def add(request):
 	if not request.POST['name']:
 		return JsonResponse(json, status=405)
 	cat_name = request.POST['name'].strip()
-	if request.user.category_set.filter(name=cat_name).exists():
+	if request.user.period_set.filter(name=cat_name).exists():
 		json["message"] = "동일한 카테고리가 있습니다"
 		return JsonResponse(json, status=400)
 	else:
-		c = Category.objects.create(
+		c = period.objects.create(
 			user=request.user,
 			name=cat_name,
 		)
@@ -33,7 +33,7 @@ def delete(request):
 		return JsonResponse(json)
 	user = request.user
 	cat_id_list_to_del = request.POST.getlist('cat_id_to_del')
-	user.category_set.filter(id__in=cat_id_list_to_del).delete()
+	user.period_set.filter(id__in=cat_id_list_to_del).delete()
 	json["result"] = "success"
 	json["cat_id_list_to_del"] = cat_id_list_to_del
 	return JsonResponse(json)
