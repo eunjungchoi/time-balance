@@ -20,5 +20,4 @@ urlpatterns = [
     url(r'^delete/$', views.work.delete, name='delete'),
     url(r'^delete-each/(?P<work_id>[0-9]+)$', views.work.delete_each, name='delete_each'),
     url(r'^balance/$', views.home.balance, name='balance'),
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
