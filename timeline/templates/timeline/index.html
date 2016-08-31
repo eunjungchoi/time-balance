@@ -1,0 +1,83 @@
+{% extends "timeline/base.html" %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<h2>Puddlr 근무 일지</h2>
+			</div>
+		</div>
+	</div>
+
+	<div class="container" style="margin-top:30px">
+		{% if member %}
+		<div class="row">
+			<div class="col-lg-12">
+				<form class="form-horizontal" action="{% url 'add' %}" method="post">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="contents" class="col-lg-2 control-label">Name </label>
+						<div class="col-lg-8">
+							<p>{{ member }}</p>
+							<input type="hidden" class="form-control" name="member" id="member" value="{{ member.user.username }}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="date" class="col-lg-2 control-label">Date</label>
+						<div class="col-lg-8">
+							<input type="date" class="form-control" format="yyyy-mm-dd" name="date" id="date" value="{% now 'Y-m-d' %}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Working unit</label>
+						<div class="col-lg-8">
+						{% for period in periods %}
+							<label class="radio-inline">
+								<input type="radio" name="period" id="period-{{ period.id }}" value="{{ period.id }}"> {{ period.unit }}일
+							</label>
+						{% endfor %}
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-offset-2 col-lg-8">
+							<button type="submit" class="btn btn-default">등록</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="container">
+		{% if works %}
+		<div class="row" style="margin-top:30px">
+			<div class="col-lg-12">
+	 			<form action="{% url 'delete' %}" method="post">
+				{% csrf_token %}
+					<div class="table-responsive">
+					<table class="table table-hover">
+						<tr>
+							<th></th>
+							<th>날짜</th>
+							<th>이름</th>
+							<th>업무</th>
+						</tr>
+						{% for work in works %}
+						<tr>
+							<td><input type="checkbox" name="item" value="{{ work.id }}" /></td>
+							<td>{{ work.date|date:"Y-m-d" }}</td>
+							<td>{{ work.member }}</td>
+							<td>{{ work.period }}</td>
+						</tr>
+						{% endfor %}
+					</table>
+
+					</div>
+					<button type="submit" class="btn btn-default">삭제</button>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+{% endblock %}
