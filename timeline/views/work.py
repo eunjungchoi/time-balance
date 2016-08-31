@@ -11,7 +11,7 @@ def add(request):
 	#
 	# period = request.POST['period']
 	# periods_obj = Period.objects.get(name__in=periods)
-	team = Team.objects.get(name='Ecolemo_Puddlr')
+	team = Team.objects.get(name='Puddlr')
 	member = User.objects.get(username=request.POST['member'])
 	period = Period.objects.get(pk=request.POST['period'])
 

@@ -11,7 +11,7 @@ from timeline.models import *
 @login_required
 def index(request):
 	user = request.user
-	team = Team.objects.get(name='Ecolemo_Puddlr')
+	team = Team.objects.get(name='Puddlr')
 
 	try:
 		member = Member.objects.filter(team=team).get(user=user)
@@ -33,7 +33,7 @@ def index(request):
 @login_required
 def index_for_viewer(request):
 	user = request.user
-	team = Team.objects.get(name='Ecolemo_Puddlr')
+	team = Team.objects.get(name='Puddlr')
 	works = Work.objects.filter(team=team).order_by("-date")
 	periods = Period.objects.filter(team=team)
 
@@ -48,7 +48,7 @@ def index_for_viewer(request):
 
 @login_required
 def balance(request):
-	team = Team.objects.get(name='Ecolemo_Puddlr')
+	team = Team.objects.get(name='Puddlr')
 	members = Member.objects.filter(team=team) # yr, dn, ej
 	periods = Period.objects.filter(team=team) # 0.5, 1.0, 1.5
 
