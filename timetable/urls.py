@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^delete/$', views.work.delete, name='delete'),
     url(r'^delete-each/(?P<work_id>[0-9]+)$', views.work.delete_each, name='delete_each'),
     url(r'^balance/$', views.home.balance, name='balance'),
+    url(r'^balance-past/$', views.home.balance_past, name='balance_past'),
+
 ]
