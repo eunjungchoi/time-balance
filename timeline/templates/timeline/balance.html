@@ -47,7 +47,7 @@
 					<div class="col-lg-8">
 					{% for year in years %}
 						<label class="radio-inline">
-							<input type="radio" name="year" id="year-{{ forloop.counter0 }}" value="{{ year }}"> {{ year }}년
+							<input type="radio" name="year" id="year-{{ forloop.counter0 }}" value="{{ year }}" {% if forloop.counter0 == 0 %} checked {% endif %}> {{ year }}년
 						</label>
 					{% endfor %}
 					</div>
@@ -57,7 +57,7 @@
 					<div class="col-lg-8">
 					{% for month in months %}
 						<label class="radio-inline">
-							<input type="radio" name="month" id="month-{{ forloop.counter0 }}" value="{{ month }}"> {{ month }}월
+							<input type="radio" name="month" id="month-{{ forloop.counter0 }}" value="{{ month }}" {% if forloop.counter0 == 0 %} checked {% endif %}> {{ month }}월
 						</label>
 					{% endfor %}
 					</div>
