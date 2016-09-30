@@ -66,7 +66,7 @@ def balance(request):
 		member.monthly_paycheck = member.user.paycheck * member.monthly_works
 
 	years = [2016]
-	months = [8, 9]
+	months = [8, 9, 10]
 
 	context = {
 		'members': members,
@@ -89,7 +89,7 @@ def balance_past(request):
 	selected_month = request.POST['month']
 
 	years = [2016]
-	months = [8, 9]
+	months = [8, 9, 10]
 
 	all_works_this_month = Work.objects.filter(team=team).filter(date__year=selected_year, date__month=selected_month)
 
